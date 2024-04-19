@@ -66,3 +66,15 @@ DB-subnet-1 = this is for our RDS database
 
 ## use same way and create two php servers for website hosting using different (private-subnet-1 and private-subnet-2) and 
 ## create one security group and attach with both instances and only create one rule in security group  (ssh allow only with JUMP-SECURIT-GROUP) 
+
+### ------------------------------------------------------------------------------------------------------- ###
+### After this do ssh our first jump-server with local machine and create 
+```
+sudo vim lenovo.pem
+```
+### and paste our .pem file data in this file 
+### then install php and apache2 in our both php servers that we have created in private subnets
+```
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
+```
+### go to this link and download php and apache2 in our both server  
