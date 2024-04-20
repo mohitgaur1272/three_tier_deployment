@@ -65,7 +65,8 @@ DB-subnet-1 = this is for our RDS database
 ![Image Alt text](/ec2-network.png)
 
 ## use same way and create two php servers for website hosting using different (private-subnet-1 and private-subnet-2) and 
-## create one security group and attach with both instances and only create one rule in security group  (ssh allow only with JUMP-SECURIT-GROUP) 
+## create one security group (like = php-security-group) and attach with both instances and only create one rule in security group  (ssh allow only with JUMP-SECURIT-GROUP) 
+(ssh -tcp -80 -custom TCP - jump-server-group)
 
 ### ------------------------------------------------------------------------------------------------------- ###
 ### After this do ssh our first jump-server with local machine and create 
@@ -73,8 +74,34 @@ DB-subnet-1 = this is for our RDS database
 sudo vim lenovo.pem
 ```
 ### and paste our .pem file data in this file 
-### then install php and apache2 in our both php servers that we have created in private subnets
+### then install php and httpd in our both php servers that we have created in private subnets
 ```
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
+[https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-LAMP.html)
 ```
-### go to this link and download php and apache2 in our both server  
+### go to this link and download php and httpd in our both server  
+```
+sudo yum update -y
+sudo yum install httpd -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo systemctl status httpd
+sudo yum install php -y 
+sudo yum install php php-mysqlnd -y
+sudo usermod -aG apache ec2-user
+sudo chown -R ec2-user:apache /var/www
+sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
+find /var/www -type f -exec sudo chmod 0664 {} \;
+echo "<html><body><h1>this is first php server </h1></body></html>" > index.php
+echo "<html><body><h1>this is second php server </h1></body></html>" > index.php
+```
+### ------------------------------------------------------------------------------------------------------- ###
+### After this create application load Balncer and select public-subnet1 , public-subnet2  , public-subnet3 
+### then create new security group (like = loadbal-sg)--> allow rule --> Create new target group and include our php1 and php2 servers --> then create load balncer.
+( http - 80 -custom TCP -anywhere )
+![Image Alt text](/target.include.png)
+## now modify security group (like = php-security-group) of php server and add rule of 
+(http TCP -> 80 -> loadbal-sg) for only access of load balancer not any
+![Image Alt text](/add.loadbal.sg.png)
+### copy load balncer DNS and paste on browser and check load balncer is work or  not 
+
+
