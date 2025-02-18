@@ -85,8 +85,8 @@ sudo yum install httpd -y
 sudo systemctl start httpd
 sudo systemctl enable httpd
 sudo systemctl status httpd
-sudo yum install php -y 
-sudo yum install php php-mysqlnd -y
+sudo amazon-linux-extras enable php8.2
+sudo yum install -y php php-cli php-common php-mysqlnd php-json php-xml php-mbstring php-zip php-gd php-curl
 sudo usermod -aG apache ec2-user
 sudo chown -R ec2-user:apache /var/www
 sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
@@ -94,6 +94,8 @@ find /var/www -type f -exec sudo chmod 0664 {} \;
 cd /var/www/html/
 echo "<html><body><h1>this is first php server </h1></body></html>" > index.php
 echo "<html><body><h1>this is second php server </h1></body></html>" > index.php
+sudo systemctl restart httpd
+php -v 
 ```
 ### ------------------------------------------------------------------------------------------------------- ###
 ### After this create application load Balncer and select public-subnet1 , public-subnet2  , public-subnet3 
@@ -122,16 +124,21 @@ echo "<html><body><h1>this is second php server </h1></body></html>" > index.php
 ```
 sudo yum update -y
 sudo yum install httpd -y
-sudo yum install php -y
-sudo yum install php php-mysqlnd -y
+sudo amazon-linux-extras enable php8.2
+sudo yum install -y php php-cli php-common php-mysqlnd php-json php-xml php-mbstring php-zip php-gd php-curl
 sudo systemct start httpd
 sudo systemctl enable httpd
 sudo chown -R ec2-user:apache /var/www
 sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
+cd /var/www/html
 sudo wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
-sudo tar -xvzf phpMyAdmin-latest-all-languages.tar.gz -C phpMyAdmin --strip-components 1
-sudo mv  phpMyAdmin-5.2.1-all-languages/ phpmyadmin
-sudo systemctl restart httpd 
+sudo tar -xvzf phpMyAdmin-latest-all-languages.tar.gz
+sudo mv phpMyAdmin-* phpmyadmin
+sudo rm -f phpMyAdmin-latest-all-languages.tar.gz
+sudo chown -R ec2-user:apache /var/www/html/phpmyadmin
+sudo chmod -R 775 /var/www/html/phpmyadmin
+sudo systemctl restart httpd
+php -v
 ```
 ### now copy the endpoint of RDS database and go jump server 
 ```
